@@ -21,4 +21,27 @@ contract Exchange {
   function getReserve() public view returns (uint256) {
     return IERC20(tokenAddress).balanceOf(address(this));
   }
+
+  function getAmount(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve) private pure returns (uint256) {
+    require(inputReserve > 0 && outputReserve > 0, "insufficient reserves");
+
+    // Δy = yΔx / (x + Δx) by constant product formula
+    return (outputReserve * inputAmount) / (inputReserve + inputAmount);
+  }
+
+  function getTokenAmount(uint256 _ethSold) public view returns (uint256) {
+    require(_ethSold > 0, "eth amount is too small");
+
+    uint256 tokenReserve = getReserve();
+
+    return getAmount(_ethSold, address(this).balance, tokenReserve);
+  }
+
+  function getEthAmount(uint256 _tokenSold) public view returns (uint256) {
+    require(_tokenSold > 0, "token amount is too small");
+
+    uint256 tokenReserve = getReserve();
+
+    return getAmount(_tokenSold, tokenReserve, address(this).balance);
+  }
 }
