@@ -44,4 +44,28 @@ contract Exchange {
 
     return getAmount(_tokenSold, tokenReserve, address(this).balance);
   }
+
+  // buy tokens with eth. Price of tokens will go up, price of eth will go down
+  function ethToTokenSwap(uint256 _minTokens) public payable {
+    uint256 tokenReserve = getReserve();
+    uint256 tokensBought = getAmount(msg.value, address(this).balance - msg.value, tokenReserve);
+
+    // to protect against front-running
+    require(tokensBought >= _minTokens, "insufficient amount of tokens for transaction");
+    IERC20(tokenAddress).transfer(msg.sender, tokensBought);
+  }
+
+  function tokenToEthSwap(uint256 _tokensSold, uint256 _minEth) public {
+    uint256 tokenReserve = getReserve();
+    uint256 ethBought = getAmount(
+      _tokensSold,
+      tokenReserve,
+      address(this).balance
+    );
+
+    require(ethBought >= _minEth, "insufficient amount of eth for transaction");
+
+    IERC20(tokenAddress).transferFrom(msg.sender, address(this), _tokensSold);
+    payable(msg.sender).transfer(ethBought);
+  }
 }
