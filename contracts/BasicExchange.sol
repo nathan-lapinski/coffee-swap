@@ -13,6 +13,11 @@ contract BasicExchange {
     }
 
     // Allows the caller to add their tokens to the liquidity pool
+    // note: In order for this to work, the caller (msg.sender) first
+    // needs to provide an allowance for this exchange contract with
+    // the token. Otherwise, this will fail. Is this because
+    // msg.sender changes to the exchange's address with the call
+    // to transferFrom on line 23?
     function provideLiquidity(uint256 tokenAmount_) public payable {
         BasicToken token = BasicToken(tokenAddress);
         token.transferFrom(msg.sender, address(this), tokenAmount_);
