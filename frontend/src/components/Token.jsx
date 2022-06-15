@@ -99,7 +99,7 @@ console.log("TS ", totalSupply)
 
       try {
         // needs name, symbol, initial supply
-        const tokenContract = await Token.deploy("TWICHIES", "TWCH", 500000000);
+        const tokenContract = await Token.deploy("HOTZIES", "HOTZIES", "500000000000000000000000000");
 
         await tokenContract.deployed();
 
