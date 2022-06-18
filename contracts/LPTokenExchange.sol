@@ -2,12 +2,13 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./BasicToken.sol";
 
-contract BasicExchange {
+contract CoffeeSwapExchange is ERC20 {
     address public tokenAddress;
 
-    constructor(address token_) {
+    constructor(address token_) ERC20("CoffeeSwap-V1", "COFFEE-V1") {
         require(token_ != address(0), "Token address can't be null address");
         tokenAddress = token_;
     }
@@ -18,11 +19,20 @@ contract BasicExchange {
     // the token. Otherwise, this will fail. Is this because
     // msg.sender changes to the exchange's address with the call
     // to transferFrom on line 23?
-    // TODO: Enforce price ratio of reserves. Currently, a user can add an 
-    // arbitrarty amonut of liquidity and destabalize the price in the pool.
     function provideLiquidity(uint256 tokenAmount_) public payable {
         BasicToken token = BasicToken(tokenAddress);
-        token.transferFrom(msg.sender, address(this), tokenAmount_);
+        // The first time liquidity is provided, the price ratio will be
+        // set for the first time.
+        if (reserves() == 0) {
+            token.transferFrom(msg.sender, address(this), tokenAmount_);
+        } else {
+            uint256 etherReserves = address(this).balance - msg.value;
+            uint256 tokenReserves = reserves();
+            uint256 tokenAmountBasedOnReserveRatio = (msg.value * tokenReserves) / etherReserves;
+
+            require(tokenAmount_ >= tokenAmountBasedOnReserveRatio, "The supplied number of tokens is insufficient");
+            token.transferFrom(msg.sender, address(this), tokenAmountBasedOnReserveRatio);
+        }
     }
 
     // Checks the token's balance sheet to see how many tokens
