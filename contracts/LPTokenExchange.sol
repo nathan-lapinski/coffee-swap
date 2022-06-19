@@ -19,12 +19,17 @@ contract CoffeeSwapExchange is ERC20 {
     // the token. Otherwise, this will fail. Is this because
     // msg.sender changes to the exchange's address with the call
     // to transferFrom on line 23?
-    function provideLiquidity(uint256 tokenAmount_) public payable {
+    function provideLiquidity(uint256 tokenAmount_) public payable returns (uint256) {
         BasicToken token = BasicToken(tokenAddress);
         // The first time liquidity is provided, the price ratio will be
         // set for the first time.
         if (reserves() == 0) {
             token.transferFrom(msg.sender, address(this), tokenAmount_);
+            // Need to set initial amount of liquidity tokens.
+            // Uniswap did this based on the amount of ether initially supplied.
+            uint256 liquidity = address(this).balance;
+            _mint(msg.sender, liquidity);
+            return liquidity;
         } else {
             uint256 etherReserves = address(this).balance - msg.value;
             uint256 tokenReserves = reserves();
@@ -32,7 +37,40 @@ contract CoffeeSwapExchange is ERC20 {
 
             require(tokenAmount_ >= tokenAmountBasedOnReserveRatio, "The supplied number of tokens is insufficient");
             token.transferFrom(msg.sender, address(this), tokenAmountBasedOnReserveRatio);
+
+            uint256 liquidity = (totalSupply() * msg.value) / etherReserves;
+            _mint(msg.sender, liquidity);
+
+            return liquidity;
         }
+    }
+
+    // TODO: In future, considering adding a deadline paramater. This was in Uniswap V1
+    function removeLiquidity(uint256 amount_, uint256 minEth_, uint256 minTokens_) public returns (uint256, uint256) {
+        require(amount_ > 0 && minEth_ > 0 && minTokens_ > 0, "Amounts must be greater than 0");
+        uint256 totalLiquidity = totalSupply();
+        require(totalLiquidity > 0, "There is no liquidity left in the pool");
+        // These are liquidity tokens...or should this be the ERC20 token?
+        uint256 tokenReserves = balanceOf(address(this));
+        // eth is in wei
+        uint256 ethAmount = (amount_ * address(this).balance) / totalLiquidity;
+        uint256 tokenAmount = (amount_ * tokenReserves) / totalLiquidity;
+
+        require(ethAmount >= minEth_ && tokenAmount >= minTokens_, "Failed to meet transaction minimums");
+
+        // burn the liquidity tokens
+        _burn(msg.sender, amount_);
+
+        // Now that the liquidity tokens have been burned, give msg sender their eth and tokens
+        // TODO: Uniswap V1 used send, but transfer is probably better.
+        payable(address(msg.sender)).send(ethAmount);
+        BasicToken(tokenAddress).transfer(msg.sender, tokenAmount);
+
+        // fire some logs/events about liquidity removal and transfer
+        return (
+            ethAmount,
+            tokenAmount
+        );
     }
 
     // Checks the token's balance sheet to see how many tokens
