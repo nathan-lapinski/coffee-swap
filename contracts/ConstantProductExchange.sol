@@ -18,6 +18,8 @@ contract BasicExchange {
     // the token. Otherwise, this will fail. Is this because
     // msg.sender changes to the exchange's address with the call
     // to transferFrom on line 23?
+    // TODO: Enforce price ratio of reserves. Currently, a user can add an 
+    // arbitrarty amonut of liquidity and destabalize the price in the pool.
     function provideLiquidity(uint256 tokenAmount_) public payable {
         BasicToken token = BasicToken(tokenAddress);
         token.transferFrom(msg.sender, address(this), tokenAmount_);
