@@ -7,10 +7,12 @@ import "./BasicToken.sol";
 
 contract CoffeeSwapExchange is ERC20 {
     address public tokenAddress;
+    address public factoryAddress;
 
     constructor(address token_) ERC20("CoffeeSwap-V1", "COFFEE-V1") {
         require(token_ != address(0), "Token address can't be null address");
         tokenAddress = token_;
+        factoryAddress = msg.sender;
     }
 
     // Allows the caller to add their tokens to the liquidity pool
