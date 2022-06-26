@@ -37,6 +37,27 @@ describe("LP Token Exchange", function () {
         });
 
         it("should mint liquidity tokens equal to reserve ratios after initial liquidity is provided", async () => {
+            await token.approve(exchange.address, toWei(600));
+            await exchange.provideLiquidity(toWei(200), { value: toWei(100)});
+    
+            expect(await getBalance(exchange.address)).to.equal(toWei(100));
+            expect(await exchange.reserves()).to.equal(toWei(200));
+            
+            // Provider of liquidity should have recieved 100 liquidity tokens
+            expect(await exchange.balanceOf(owner.address)).to.equal(toWei(100));
+
+            await exchange.provideLiquidity(toWei(400), { value: toWei(100)});
+
+            expect(await getBalance(exchange.address)).to.equal(toWei(200));
+            expect(await exchange.reserves()).to.equal(toWei(400));
+            
+            // Provider of liquidity should have recieved 200 liquidity tokens
+            expect(await exchange.balanceOf(owner.address)).to.equal(toWei(200));
+        });
+    });
+
+    describe("removeLiquidity", () => {
+        it("should allow removal of liquidity", async () => {
             await token.approve(exchange.address, toWei(200));
             await exchange.provideLiquidity(toWei(200), { value: toWei(100)});
     
@@ -46,7 +67,7 @@ describe("LP Token Exchange", function () {
             // Provider of liquidity should have recieved 100 liquidity tokens
             expect(await exchange.balanceOf(owner.address)).to.equal(toWei(100));
 
-            await exchange.provideLiquidity(toWei(200), { value: toWei(100)});
+            await exchange.removeLiquidity(toWei(50));
         });
     });
 });

@@ -46,8 +46,8 @@ contract CoffeeSwapExchange is ERC20 {
     }
 
     // TODO: In future, considering adding a deadline paramater. This was in Uniswap V1
-    function removeLiquidity(uint256 amount_, uint256 minEth_, uint256 minTokens_) public returns (uint256, uint256) {
-        require(amount_ > 0 && minEth_ > 0 && minTokens_ > 0, "Amounts must be greater than 0");
+    function removeLiquidity(uint256 amount_) public returns (uint256, uint256) {
+        require(amount_ > 0, "Amounts must be greater than 0");
         uint256 totalLiquidity = totalSupply();
         require(totalLiquidity > 0, "There is no liquidity left in the pool");
         // These are liquidity tokens...or should this be the ERC20 token?
@@ -56,14 +56,11 @@ contract CoffeeSwapExchange is ERC20 {
         uint256 ethAmount = (amount_ * address(this).balance) / totalLiquidity;
         uint256 tokenAmount = (amount_ * tokenReserves) / totalLiquidity;
 
-        require(ethAmount >= minEth_ && tokenAmount >= minTokens_, "Failed to meet transaction minimums");
-
         // burn the liquidity tokens
         _burn(msg.sender, amount_);
 
         // Now that the liquidity tokens have been burned, give msg sender their eth and tokens
-        // TODO: Uniswap V1 used send, but transfer is probably better.
-        payable(address(msg.sender)).send(ethAmount);
+        payable(address(msg.sender)).transfer(ethAmount);
         BasicToken(tokenAddress).transfer(msg.sender, tokenAmount);
 
         // fire some logs/events about liquidity removal and transfer
