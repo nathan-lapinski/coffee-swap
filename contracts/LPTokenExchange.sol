@@ -5,6 +5,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./BasicToken.sol";
 
+interface IFactory {
+    function getExchange(address tokenAddress_) external returns (address);
+}
+
 contract CoffeeSwapExchange is ERC20 {
     address public tokenAddress;
     address public factoryAddress;
@@ -109,5 +113,9 @@ contract CoffeeSwapExchange is ERC20 {
         require(ethAmount >= ethMinimum_, "Insufficient ether amount");
         BasicToken(tokenAddress).transferFrom(msg.sender, address(this), tokenAmount_);
         payable(msg.sender).transfer(ethAmount);
+    }
+
+    function tokenToTokenSwap(uint256 tokenAmount_, uint256 minTokenAmount_, address targetToken_) public {
+        require(IFactory(factoryAddress).getExchange(targetToken_) != address(0), "Target token does not exist");
     }
 }
