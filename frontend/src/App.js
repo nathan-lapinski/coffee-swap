@@ -1,4 +1,3 @@
-import './App.css';
 import styled from 'styled-components';
 import { ActivateDeactivate } from './components/ActivateDeactivate';
 import { SectionDivider } from './components/SectionDivider';
@@ -6,23 +5,21 @@ import { SignMessage } from './components/SignMessage';
 import { WalletStatus } from './components/WalletStatus';
 import { Token } from './components/Token';
 import { Exchange } from './components/Exchange';
+import { Header } from './components/Header';
 
 const StyledAppDiv = styled.div`
   display: grid;
   grid-gap: 20px;
+  background: #212429;
+  height: 100vh;
 `;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-        ☕️Welcome to CoffeeSwap🔷
-        </p>
-      </header>
       <StyledAppDiv>
+      <Header />
       <ActivateDeactivate />
-      <SectionDivider />
+      {/* <SectionDivider />
       <WalletStatus />
       <SectionDivider />
       <SignMessage />
@@ -32,9 +29,8 @@ function App() {
       <Exchange />
       <SectionDivider />
       <SectionDivider />
-      <SectionDivider />x
+      <SectionDivider />x */}
       </StyledAppDiv>
-    </div>
   );
 }
 
