@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import ExchangeArtifact from "../artifacts/contracts/Exchange.sol/Exchange.json";
+import ExchangeArtifact from "../artifacts/contracts/LPTokenExchange.sol/CoffeeSwapExchange.json";
 import { SectionDivider } from "./SectionDivider";
 
 const StyledDeployContractButton = styled.button`
@@ -63,22 +63,6 @@ export function Exchange() {
     setSigner(library.getSigner());
   }, [library]);
 
-  //   useEffect(() => {
-  //     if (!exchangeContract) {
-  //       return;
-  //     }
-
-  //     async function getGreeting(exchangeContract) {
-  //     //   const _greeting = await exchangeContract.greet();
-
-  //     //   if (_greeting !== reserves) {
-  //     //     setGreeting(_greeting);
-  //     //   }
-  //     }
-
-  //     getGreeting(exchangeContract);
-  //   }, [exchangeContract, reserves]);
-
   function handleDeployContract(event) {
     event.preventDefault();
 
@@ -95,12 +79,15 @@ export function Exchange() {
       );
 
       try {
+        if (!tokenAddressInput) {
+          window.alert(`Need a token Address ${tokenAddressInput}`);
+        }
         // needs exchange address
         const exchangeContract = await Exchange.deploy(tokenAddressInput);
 
         await exchangeContract.deployed();
 
-        const reserve = await exchangeContract.getReserve();
+        const reserve = await exchangeContract.reserves();
 
         setExchangeContract(exchangeContract);
         setReserves(reserve);
@@ -148,16 +135,10 @@ export function Exchange() {
 
     async function submitLiquidity(exchangeContract) {
       try {
-        const liquidityTxn = await exchangeContract.provideLiquidity(liquidity);
+        // TODO: The value of eth sent should be set in the UI instead of being hardcoded
+        const liquidityTxn = await exchangeContract.provideLiquidity(liquidity, {value: ethers.utils.parseUnits("1", "ether")});
 
         await liquidityTxn.wait();
-
-        // const newGreeting = await exchangeContract.greet();
-        // window.alert(`Success!\n\nGreeting is now: ${newGreeting}`);
-
-        // if (newGreeting !== reserves) {
-        //   setReserves(newGreeting);
-        // }
       } catch (error) {
         window.alert(
           "Error!" + (error && error.message ? `\n\n${error.message}` : "")
@@ -186,13 +167,6 @@ export function Exchange() {
         const swapTxn = await exchangeContract.ethToTokenSwap(minTokens);
 
         await swapTxn.wait();
-
-        // const newGreeting = await exchangeContract.greet();
-        // window.alert(`Success!\n\nGreeting is now: ${newGreeting}`);
-
-        // if (newGreeting !== reserves) {
-        //   setReserves(newGreeting);
-        // }
       } catch (error) {
         window.alert(
           "Error!" + (error && error.message ? `\n\n${error.message}` : "")
