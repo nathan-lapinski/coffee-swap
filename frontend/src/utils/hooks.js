@@ -1,7 +1,7 @@
-import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useState } from 'react';
-import { injected } from './connectors';
-import { Provider } from './provider';
+import { useWeb3React } from "@web3-react/core";
+import { useCallback, useEffect, useState } from "react";
+import { injected } from "./connectors";
+import { Provider } from "./provider";
 
 export function useEagerConnect() {
   const { activate, active } = useWeb3React();
@@ -19,7 +19,7 @@ export function useEagerConnect() {
           await activate(injected, undefined, true);
         } catch (error) {
           window.alert(
-            'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+            "Error!" + (error && error.message ? `\n\n${error.message}` : "")
           );
         }
       }
@@ -68,16 +68,16 @@ export function useInactiveListener(suppress = false) {
         }
       };
 
-      ethereum.on('connect', handleConnect);
-      ethereum.on('chainChanged', handleChainChanged);
-      ethereum.on('accountsChanged', handleAccountsChanged);
+      ethereum.on("connect", handleConnect);
+      ethereum.on("chainChanged", handleChainChanged);
+      ethereum.on("accountsChanged", handleAccountsChanged);
 
       // cleanup function
       return () => {
         if (ethereum.removeListener) {
-          ethereum.removeListener('connect', handleConnect);
-          ethereum.removeListener('chainChanged', handleChainChanged);
-          ethereum.removeListener('accountsChanged', handleAccountsChanged);
+          ethereum.removeListener("connect", handleConnect);
+          ethereum.removeListener("chainChanged", handleChainChanged);
+          ethereum.removeListener("accountsChanged", handleAccountsChanged);
         }
       };
     }
