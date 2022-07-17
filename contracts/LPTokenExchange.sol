@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./BasicToken.sol";
+import "./Token.sol";
 
 interface IFactory {
     function getExchange(address tokenAddress_) external returns (address);
@@ -26,7 +26,7 @@ contract CoffeeSwapExchange is ERC20 {
     // msg.sender changes to the exchange's address with the call
     // to transferFrom on line 23?
     function provideLiquidity(uint256 tokenAmount_) public payable returns (uint256) {
-        BasicToken token = BasicToken(tokenAddress);
+        Token token = Token(tokenAddress);
         // The first time liquidity is provided, the price ratio will be
         // set for the first time.
         if (reserves() == 0) {
@@ -67,7 +67,7 @@ contract CoffeeSwapExchange is ERC20 {
 
         // Now that the liquidity tokens have been burned, give msg sender their eth and tokens
         payable(address(msg.sender)).transfer(ethAmount);
-        BasicToken(tokenAddress).transfer(msg.sender, tokenAmount);
+        Token(tokenAddress).transfer(msg.sender, tokenAmount);
 
         // fire some logs/events about liquidity removal and transfer
         return (
@@ -79,7 +79,7 @@ contract CoffeeSwapExchange is ERC20 {
     // Checks the token's balance sheet to see how many tokens
     // this exchange's address holds
     function reserves() public view returns (uint256) {
-        return BasicToken(tokenAddress).balanceOf(address(this));
+        return Token(tokenAddress).balanceOf(address(this));
     }
 
     // Constant Product Pricing method for swap
@@ -105,13 +105,13 @@ contract CoffeeSwapExchange is ERC20 {
     function ethToTokenSwap(uint256 tokenMinimum_) public payable {
         uint256 tokenAmount = calculateTokenAmount(msg.value);
         require(tokenAmount >= tokenMinimum_, "Insufficient token amount");
-        BasicToken(tokenAddress).transfer(msg.sender, tokenAmount);
+        Token(tokenAddress).transfer(msg.sender, tokenAmount);
     }
 
     function tokenToEthSwap(uint256 tokenAmount_, uint256 ethMinimum_) public {
         uint256 ethAmount = calculateEthAmount(tokenAmount_);
         require(ethAmount >= ethMinimum_, "Insufficient ether amount");
-        BasicToken(tokenAddress).transferFrom(msg.sender, address(this), tokenAmount_);
+        Token(tokenAddress).transferFrom(msg.sender, address(this), tokenAmount_);
         payable(msg.sender).transfer(ethAmount);
     }
 
