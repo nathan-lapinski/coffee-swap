@@ -1,8 +1,7 @@
 {
   "short_name": "CoffeeSwap",
   "name": "A DEX. With coffee.",
-  "icons": [
-  ],
+  "icons": [],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",

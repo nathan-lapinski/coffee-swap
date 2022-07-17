@@ -1,12 +1,9 @@
-import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
-import {
-  useEffect,
-  useState
-} from 'react';
-import styled from 'styled-components';
-import ExchangeArtifact from '../artifacts/contracts/Exchange.sol/Exchange.json';
-import { SectionDivider } from './SectionDivider';
+import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import ExchangeArtifact from "../artifacts/contracts/Exchange.sol/Exchange.json";
+import { SectionDivider } from "./SectionDivider";
 
 const StyledDeployContractButton = styled.button`
   width: 180px;
@@ -49,13 +46,13 @@ export function Exchange() {
 
   const [signer, setSigner] = useState();
   const [exchangeContract, setExchangeContract] = useState();
-  const [exchangeContractAddr, setExchangeContractAddr] = useState('');
-  const [reserves, setReserves] = useState('');
-  const [tokenAddressInput, setExchangeAddressInput] = useState('');
-  const [minTokens, setMinTokens] = useState('');
+  const [exchangeContractAddr, setExchangeContractAddr] = useState("");
+  const [reserves, setReserves] = useState("");
+  const [tokenAddressInput, setExchangeAddressInput] = useState("");
+  const [minTokens, setMinTokens] = useState("");
 
-  const [minTokensInput, setMinTokensInput] = useState('');
-  const [liquidity, setLiquidity] = useState('');
+  const [minTokensInput, setMinTokensInput] = useState("");
+  const [liquidity, setLiquidity] = useState("");
 
   useEffect(() => {
     if (!library) {
@@ -66,21 +63,21 @@ export function Exchange() {
     setSigner(library.getSigner());
   }, [library]);
 
-//   useEffect(() => {
-//     if (!exchangeContract) {
-//       return;
-//     }
+  //   useEffect(() => {
+  //     if (!exchangeContract) {
+  //       return;
+  //     }
 
-//     async function getGreeting(exchangeContract) {
-//     //   const _greeting = await exchangeContract.greet();
+  //     async function getGreeting(exchangeContract) {
+  //     //   const _greeting = await exchangeContract.greet();
 
-//     //   if (_greeting !== reserves) {
-//     //     setGreeting(_greeting);
-//     //   }
-//     }
+  //     //   if (_greeting !== reserves) {
+  //     //     setGreeting(_greeting);
+  //     //   }
+  //     }
 
-//     getGreeting(exchangeContract);
-//   }, [exchangeContract, reserves]);
+  //     getGreeting(exchangeContract);
+  //   }, [exchangeContract, reserves]);
 
   function handleDeployContract(event) {
     event.preventDefault();
@@ -113,7 +110,7 @@ export function Exchange() {
         setExchangeContractAddr(exchangeContract.address);
       } catch (error) {
         window.alert(
-          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
         );
       }
     }
@@ -140,16 +137,16 @@ export function Exchange() {
     event.preventDefault();
 
     if (!exchangeContract) {
-      window.alert('Undefined exchangeContract');
+      window.alert("Undefined exchangeContract");
       return;
     }
 
     if (!liquidity) {
-      window.alert('Need to specify liquidity to provide');
+      window.alert("Need to specify liquidity to provide");
       return;
     }
 
-    async function submitLiquidity(exchangeContract){
+    async function submitLiquidity(exchangeContract) {
       try {
         const liquidityTxn = await exchangeContract.provideLiquidity(liquidity);
 
@@ -163,11 +160,11 @@ export function Exchange() {
         // }
       } catch (error) {
         window.alert(
-          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
         );
       }
     }
-  
+
     submitLiquidity(exchangeContract);
   }
 
@@ -175,16 +172,16 @@ export function Exchange() {
     event.preventDefault();
 
     if (!exchangeContract) {
-      window.alert('Undefined exchangeContract');
+      window.alert("Undefined exchangeContract");
       return;
     }
 
     if (!minTokens) {
-      window.alert('Need to specify a minimum number of tokens for purchasing');
+      window.alert("Need to specify a minimum number of tokens for purchasing");
       return;
     }
 
-    async function submitEthToTokenSwap(exchangeContract){
+    async function submitEthToTokenSwap(exchangeContract) {
       try {
         const swapTxn = await exchangeContract.ethToTokenSwap(minTokens);
 
@@ -198,11 +195,11 @@ export function Exchange() {
         // }
       } catch (error) {
         window.alert(
-          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
         );
       }
     }
-  
+
     submitEthToTokenSwap(exchangeContract);
   }
 
@@ -210,18 +207,20 @@ export function Exchange() {
     event.preventDefault();
 
     if (!exchangeContract) {
-      window.alert('Undefined exchangeContract');
+      window.alert("Undefined exchangeContract");
       return;
     }
 
     if (!tokenAddressInput) {
-      window.alert('Greeting cannot be empty');
+      window.alert("Greeting cannot be empty");
       return;
     }
 
-    async function submitGreeting(exchangeContract){
+    async function submitGreeting(exchangeContract) {
       try {
-        const setGreetingTxn = await exchangeContract.setGreeting(tokenAddressInput);
+        const setGreetingTxn = await exchangeContract.setGreeting(
+          tokenAddressInput
+        );
 
         await setGreetingTxn.wait();
 
@@ -233,7 +232,7 @@ export function Exchange() {
         }
       } catch (error) {
         window.alert(
-          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
         );
       }
     }
@@ -246,8 +245,8 @@ export function Exchange() {
       <StyledDeployContractButton
         disabled={!active || exchangeContract ? true : false}
         style={{
-          cursor: !active || exchangeContract ? 'not-allowed' : 'pointer',
-          borderColor: !active || exchangeContract ? 'unset' : 'blue'
+          cursor: !active || exchangeContract ? "not-allowed" : "pointer",
+          borderColor: !active || exchangeContract ? "unset" : "blue",
         }}
         onClick={handleDeployContract}
       >
@@ -267,23 +266,29 @@ export function Exchange() {
         <div></div>
         <StyledLabel>Current reserves</StyledLabel>
         <div>
-          {reserves ? parseInt(reserves._hex, 16) : <em>{`<Contract not yet deployed>`}</em>}
+          {reserves ? (
+            parseInt(reserves._hex, 16)
+          ) : (
+            <em>{`<Contract not yet deployed>`}</em>
+          )}
         </div>
         {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
         <div></div>
-        <StyledLabel htmlFor="tokenAddressInput">Set new token address</StyledLabel>
+        <StyledLabel htmlFor="tokenAddressInput">
+          Set new token address
+        </StyledLabel>
         <StyledInput
           id="tokenAddressInput"
           type="text"
-          placeholder={reserves ? '' : '<Contract not yet deployed>'}
+          placeholder={reserves ? "" : "<Contract not yet deployed>"}
           onChange={handleExchangeAddressChange}
-          style={{ fontStyle: reserves ? 'normal' : 'italic' }}
+          style={{ fontStyle: reserves ? "normal" : "italic" }}
         ></StyledInput>
         <StyledButton
           disabled={!active || !exchangeContract ? true : false}
           style={{
-            cursor: !active || !exchangeContract ? 'not-allowed' : 'pointer',
-            borderColor: !active || !exchangeContract ? 'unset' : 'blue'
+            cursor: !active || !exchangeContract ? "not-allowed" : "pointer",
+            borderColor: !active || !exchangeContract ? "unset" : "blue",
           }}
           onClick={handleGreetingSubmit}
         >
@@ -293,15 +298,15 @@ export function Exchange() {
         <StyledInput
           id="liquidityInput"
           type="text"
-          placeholder={'<Liquidity to provice>'}
+          placeholder={"<Liquidity to provice>"}
           onChange={handleLiquidityChange}
-          style={{ fontStyle: 'italic' }}
+          style={{ fontStyle: "italic" }}
         ></StyledInput>
         <StyledButton
           disabled={!active || !exchangeContract ? true : false}
           style={{
-            cursor: !active || !exchangeContract ? 'not-allowed' : 'pointer',
-            borderColor: !active || !exchangeContract ? 'unset' : 'blue'
+            cursor: !active || !exchangeContract ? "not-allowed" : "pointer",
+            borderColor: !active || !exchangeContract ? "unset" : "blue",
           }}
           onClick={handleProvideLiquiditySubmit}
         >
@@ -311,15 +316,15 @@ export function Exchange() {
         <StyledInput
           id="minTokensInput"
           type="text"
-          placeholder={'<Minimum number of tokens to buy>'}
+          placeholder={"<Minimum number of tokens to buy>"}
           onChange={handleMinTokensChange}
-          style={{ fontStyle: 'italic' }}
+          style={{ fontStyle: "italic" }}
         ></StyledInput>
         <StyledButton
           disabled={!active || !exchangeContract ? true : false}
           style={{
-            cursor: !active || !exchangeContract ? 'not-allowed' : 'pointer',
-            borderColor: !active || !exchangeContract ? 'unset' : 'blue'
+            cursor: !active || !exchangeContract ? "not-allowed" : "pointer",
+            borderColor: !active || !exchangeContract ? "unset" : "blue",
           }}
           onClick={handleEthForTokenSubmit}
         >

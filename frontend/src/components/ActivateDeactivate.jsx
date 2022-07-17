@@ -1,16 +1,16 @@
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import { AbstractConnector } from "@web3-react/abstract-connector";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import {
   NoEthereumProviderError,
-  UserRejectedRequestError
-} from '@web3-react/injected-connector';
-import { MouseEvent, ReactElement, useState } from 'react';
-import styled from 'styled-components';
-import { injected } from '../utils/connectors';
-import { useEagerConnect, useInactiveListener } from '../utils/hooks';
-import { Provider } from '../utils/provider';
+  UserRejectedRequestError,
+} from "@web3-react/injected-connector";
+import { MouseEvent, ReactElement, useState } from "react";
+import styled from "styled-components";
+import { injected } from "../utils/connectors";
+import { useEagerConnect, useInactiveListener } from "../utils/hooks";
+import { Provider } from "../utils/provider";
 
-function getErrorMessage(error){
+function getErrorMessage(error) {
   let errorMessage;
 
   switch (error.constructor) {
@@ -42,16 +42,18 @@ const StyledActivateDeactivateDiv = styled.div`
 const StyledActivateButton = styled.button`
   width: 150px;
   height: 2rem;
-  border-radius: 1rem;
-  border-color: green;
+  border-radius: 0.25rem;
   cursor: pointer;
+  color: white;
+  box-shadow: rgb(255 0 122) 1px 1000px 1px inset;
 `;
 
 const StyledDeactivateButton = styled.button`
   width: 150px;
   height: 2rem;
-  border-radius: 1rem;
-  border-color: red;
+  border-radius: 0.25rem;
+  color: white;
+  box-shadow: rgb(255 0 122) 1px 1000px 1px inset;
   cursor: pointer;
 `;
 
@@ -85,8 +87,8 @@ function Activate() {
     <StyledActivateButton
       disabled={active}
       style={{
-        cursor: active ? 'not-allowed' : 'pointer',
-        borderColor: activating ? 'orange' : active ? 'unset' : 'green'
+        cursor: active ? "not-allowed" : "pointer",
+        borderColor: activating ? "orange" : active ? "unset" : "green",
       }}
       onClick={handleActivate}
     >
@@ -109,8 +111,8 @@ function Deactivate() {
     <StyledDeactivateButton
       disabled={!active}
       style={{
-        cursor: active ? 'pointer' : 'not-allowed',
-        borderColor: active ? 'red' : 'unset'
+        cursor: active ? "pointer" : "not-allowed",
+        borderColor: active ? "red" : "unset",
       }}
       onClick={handleDeactivate}
     >

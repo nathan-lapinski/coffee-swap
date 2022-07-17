@@ -1,16 +1,16 @@
-import { useWeb3React } from '@web3-react/core';
-import { Contract, ethers, Signer } from 'ethers';
+import { useWeb3React } from "@web3-react/core";
+import { Contract, ethers, Signer } from "ethers";
 import {
   ChangeEvent,
   MouseEvent,
   ReactElement,
   useEffect,
-  useState
-} from 'react';
-import styled from 'styled-components';
-import TokenArtifact from '../artifacts/contracts/Token.sol/Token.json';
-import { Provider } from '../utils/provider';
-import { SectionDivider } from './SectionDivider';
+  useState,
+} from "react";
+import styled from "styled-components";
+import TokenArtifact from "../artifacts/contracts/Token.sol/Token.json";
+import { Provider } from "../utils/provider";
+import { SectionDivider } from "./SectionDivider";
 
 const StyledDeployContractButton = styled.button`
   width: 180px;
@@ -53,10 +53,10 @@ export function Token() {
 
   const [signer, setSigner] = useState();
   const [tokenContract, setTokenContract] = useState();
-  const [tokenContractAddr, setTokenContractAddr] = useState('');
-  const [totalSupply, setTotalSupply] = useState('');
-  const [greetingInput, setGreetingInput] = useState('');
-console.log("TS ", totalSupply)
+  const [tokenContractAddr, setTokenContractAddr] = useState("");
+  const [totalSupply, setTotalSupply] = useState("");
+  const [greetingInput, setGreetingInput] = useState("");
+  console.log("TS ", totalSupply);
   useEffect(() => {
     if (!library) {
       setSigner(undefined);
@@ -72,11 +72,10 @@ console.log("TS ", totalSupply)
     }
 
     async function getGreeting(tokenContract) {
-    //   const _greeting = await tokenContract.greet();
-
-    //   if (_greeting !== totalSupply) {
-    //     setGreeting(_greeting);
-    //   }
+      //   const _greeting = await tokenContract.greet();
+      //   if (_greeting !== totalSupply) {
+      //     setGreeting(_greeting);
+      //   }
     }
 
     getGreeting(tokenContract);
@@ -99,11 +98,15 @@ console.log("TS ", totalSupply)
 
       try {
         // needs name, symbol, initial supply
-        const tokenContract = await Token.deploy("HOTZIES", "HOTZIES", "500000000000000000000000000");
+        const tokenContract = await Token.deploy(
+          "HOTZIES",
+          "HOTZIES",
+          "500000000000000000000000000"
+        );
 
         await tokenContract.deployed();
 
-        const supply = await tokenContract.getTotalSupply();
+        const supply = await tokenContract.totalSupply();
 
         setTokenContract(tokenContract);
         setTotalSupply(supply);
@@ -113,7 +116,7 @@ console.log("TS ", totalSupply)
         setTokenContractAddr(tokenContract.address);
       } catch (error) {
         window.alert(
-          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
         );
       }
     }
@@ -129,48 +132,47 @@ console.log("TS ", totalSupply)
   function handleFaucetSubmit(event) {
     event.preventDefault();
     if (!tokenContract) {
-      window.alert('Undefined tokenContract');
+      window.alert("Undefined tokenContract");
       return;
     }
 
-    async function submitFaucet(tokenContract){
-        try {
-          const faucetTxn = await tokenContract.faucet();
-  
-          await faucetTxn.wait();
+    async function submitFaucet(tokenContract) {
+      try {
+        const faucetTxn = await tokenContract.faucet();
 
+        await faucetTxn.wait();
 
-          console.log("SIGNER ", signer)
-  
+        console.log("SIGNER ", signer);
+
         //   const balance = await tokenContract.getBalanceOf();
         //   window.alert(`Success!\n\nGreeting is now: ${newGreeting}`);
-  
+
         //   if (newGreeting !== totalSupply) {
         //     setTotalSupply(newGreeting);
         //   }
-        } catch (error) {
-          window.alert(
-            'Error!' + (error && error.message ? `\n\n${error.message}` : '')
-          );
-        }
+      } catch (error) {
+        window.alert(
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
+        );
       }
-  
+    }
+
     submitFaucet(tokenContract);
   }
   function handleGreetingSubmit(event) {
     event.preventDefault();
 
     if (!tokenContract) {
-      window.alert('Undefined tokenContract');
+      window.alert("Undefined tokenContract");
       return;
     }
 
     if (!greetingInput) {
-      window.alert('Greeting cannot be empty');
+      window.alert("Greeting cannot be empty");
       return;
     }
 
-    async function submitGreeting(tokenContract){
+    async function submitGreeting(tokenContract) {
       try {
         const setGreetingTxn = await tokenContract.setGreeting(greetingInput);
 
@@ -184,7 +186,7 @@ console.log("TS ", totalSupply)
         }
       } catch (error) {
         window.alert(
-          'Error!' + (error && error.message ? `\n\n${error.message}` : '')
+          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
         );
       }
     }
@@ -197,8 +199,8 @@ console.log("TS ", totalSupply)
       <StyledDeployContractButton
         disabled={!active || tokenContract ? true : false}
         style={{
-          cursor: !active || tokenContract ? 'not-allowed' : 'pointer',
-          borderColor: !active || tokenContract ? 'unset' : 'blue'
+          cursor: !active || tokenContract ? "not-allowed" : "pointer",
+          borderColor: !active || tokenContract ? "unset" : "blue",
         }}
         onClick={handleDeployContract}
       >
@@ -218,7 +220,11 @@ console.log("TS ", totalSupply)
         <div></div>
         <StyledLabel>Current totalSupply</StyledLabel>
         <div>
-          {totalSupply ? parseInt(totalSupply._hex, 16) : <em>{`<Contract not yet deployed>`}</em>}
+          {totalSupply ? (
+            parseInt(totalSupply._hex, 16)
+          ) : (
+            <em>{`<Contract not yet deployed>`}</em>
+          )}
         </div>
         {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
         <div></div>
@@ -226,15 +232,15 @@ console.log("TS ", totalSupply)
         <StyledInput
           id="greetingInput"
           type="text"
-          placeholder={totalSupply ? '' : '<Contract not yet deployed>'}
+          placeholder={totalSupply ? "" : "<Contract not yet deployed>"}
           onChange={handleGreetingChange}
-          style={{ fontStyle: totalSupply ? 'normal' : 'italic' }}
+          style={{ fontStyle: totalSupply ? "normal" : "italic" }}
         ></StyledInput>
         <StyledButton
           disabled={!active || !tokenContract ? true : false}
           style={{
-            cursor: !active || !tokenContract ? 'not-allowed' : 'pointer',
-            borderColor: !active || !tokenContract ? 'unset' : 'blue'
+            cursor: !active || !tokenContract ? "not-allowed" : "pointer",
+            borderColor: !active || !tokenContract ? "unset" : "blue",
           }}
           onClick={handleGreetingSubmit}
         >
@@ -243,8 +249,8 @@ console.log("TS ", totalSupply)
         <StyledButton
           disabled={!active || !tokenContract ? true : false}
           style={{
-            cursor: !active || !tokenContract ? 'not-allowed' : 'pointer',
-            borderColor: !active || !tokenContract ? 'unset' : 'blue'
+            cursor: !active || !tokenContract ? "not-allowed" : "pointer",
+            borderColor: !active || !tokenContract ? "unset" : "blue",
           }}
           onClick={handleFaucetSubmit}
         >
