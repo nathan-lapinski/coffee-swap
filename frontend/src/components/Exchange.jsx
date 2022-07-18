@@ -139,6 +139,9 @@ export function Exchange() {
         const liquidityTxn = await exchangeContract.provideLiquidity(liquidity, {value: ethers.utils.parseUnits("1", "ether")});
 
         await liquidityTxn.wait();
+
+        const updatedReserves = await exchangeContract.reserves();
+        setReserves(updatedReserves);
       } catch (error) {
         window.alert(
           "Error!" + (error && error.message ? `\n\n${error.message}` : "")
@@ -177,43 +180,6 @@ export function Exchange() {
     submitEthToTokenSwap(exchangeContract);
   }
 
-  function handleGreetingSubmit(event) {
-    event.preventDefault();
-
-    if (!exchangeContract) {
-      window.alert("Undefined exchangeContract");
-      return;
-    }
-
-    if (!tokenAddressInput) {
-      window.alert("Greeting cannot be empty");
-      return;
-    }
-
-    async function submitGreeting(exchangeContract) {
-      try {
-        const setGreetingTxn = await exchangeContract.setGreeting(
-          tokenAddressInput
-        );
-
-        await setGreetingTxn.wait();
-
-        const newGreeting = await exchangeContract.greet();
-        window.alert(`Success!\n\nGreeting is now: ${newGreeting}`);
-
-        if (newGreeting !== reserves) {
-          setReserves(newGreeting);
-        }
-      } catch (error) {
-        window.alert(
-          "Error!" + (error && error.message ? `\n\n${error.message}` : "")
-        );
-      }
-    }
-
-    submitGreeting(exchangeContract);
-  }
-
   return (
     <>
       <StyledDeployContractButton
@@ -249,7 +215,7 @@ export function Exchange() {
         {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
         <div></div>
         <StyledLabel htmlFor="tokenAddressInput">
-          Set new token address
+          Set token address
         </StyledLabel>
         <StyledInput
           id="tokenAddressInput"
@@ -258,16 +224,6 @@ export function Exchange() {
           onChange={handleExchangeAddressChange}
           style={{ fontStyle: reserves ? "normal" : "italic" }}
         ></StyledInput>
-        <StyledButton
-          disabled={!active || !exchangeContract ? true : false}
-          style={{
-            cursor: !active || !exchangeContract ? "not-allowed" : "pointer",
-            borderColor: !active || !exchangeContract ? "unset" : "blue",
-          }}
-          onClick={handleGreetingSubmit}
-        >
-          Submit
-        </StyledButton>
         <StyledLabel htmlFor="liquidityInput">Provide Liquidity</StyledLabel>
         <StyledInput
           id="liquidityInput"
