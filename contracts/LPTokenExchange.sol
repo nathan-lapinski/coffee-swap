@@ -82,6 +82,11 @@ contract CoffeeSwapExchange is ERC20 {
         return Token(tokenAddress).balanceOf(address(this));
     }
 
+    // Returns the amount of eth held in this pool
+    function etherReserves() public view returns (uint256) {
+        return balanceOf(address(this));
+    }
+
     // Constant Product Pricing method for swap
     // (x+Δx)(y−Δy)=xy
     // Δy= yΔx / x+Δx

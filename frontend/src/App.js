@@ -1,11 +1,12 @@
+import { useState } from "react";
+
 import styled from "styled-components";
-import { ActivateDeactivate } from "./components/ActivateDeactivate";
-import { SectionDivider } from "./components/SectionDivider";
-import { SignMessage } from "./components/SignMessage";
 import { WalletStatus } from "./components/WalletStatus";
 import { Token } from "./components/Token";
 import { Exchange } from "./components/Exchange";
 import { Header } from "./components/Header";
+
+import { Tab, Tabs } from "@blueprintjs/core";
 
 const StyledAppDiv = styled.div`
   display: grid;
@@ -41,6 +42,7 @@ const StyledAppSection = styled.div`
 `;
 
 function App() {
+  const [tabId, setTabId] = useState("home");
   return (
     <StyledAppDiv>
       <StyledOverlay>
@@ -51,14 +53,26 @@ function App() {
           </StyledWelcomeText>
         </StyledWelcomeDiv>
         <StyledAppSection>
-          <SectionDivider />
-          <WalletStatus />
-          <SectionDivider />
-          <SignMessage />
-          <SectionDivider />
-          <Token />
-          <SectionDivider />
-          <Exchange />
+          <Tabs
+            id="TabsExample"
+            onChange={(newTab, prevTab) => {
+              setTabId(newTab)
+            }}
+            selectedTabId={tabId}
+            renderActiveTabPanelOnly={true}
+            key={"vertical"}
+            animate={true}
+          >
+            <Tab id="home" title="Home" panel={<WalletStatus />} />
+            <Tab id="tok" title="Token" panel={<Token />} />
+            <Tab
+              id="ex"
+              title="Exchange"
+              panel={<Exchange />}
+              panelClassName="exchange-panel"
+            />
+            <Tabs.Expander />
+          </Tabs>
         </StyledAppSection>
       </StyledOverlay>
     </StyledAppDiv>

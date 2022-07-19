@@ -136,7 +136,10 @@ export function Exchange() {
     async function submitLiquidity(exchangeContract) {
       try {
         // TODO: The value of eth sent should be set in the UI instead of being hardcoded
-        const liquidityTxn = await exchangeContract.provideLiquidity(liquidity, {value: ethers.utils.parseUnits("1", "ether")});
+        const liquidityTxn = await exchangeContract.provideLiquidity(
+          liquidity,
+          { value: ethers.utils.parseUnits("1", "ether") }
+        );
 
         await liquidityTxn.wait();
 
@@ -167,9 +170,14 @@ export function Exchange() {
 
     async function submitEthToTokenSwap(exchangeContract) {
       try {
-        const swapTxn = await exchangeContract.ethToTokenSwap(minTokens);
+        const swapTxn = await exchangeContract.ethToTokenSwap(minTokens, {
+          value: ethers.utils.parseUnits("0.1", "ether"),
+        });
 
         await swapTxn.wait();
+
+        const updatedReserves = await exchangeContract.reserves();
+        setReserves(updatedReserves);
       } catch (error) {
         window.alert(
           "Error!" + (error && error.message ? `\n\n${error.message}` : "")
@@ -214,9 +222,7 @@ export function Exchange() {
         </div>
         {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
         <div></div>
-        <StyledLabel htmlFor="tokenAddressInput">
-          Set token address
-        </StyledLabel>
+        <StyledLabel htmlFor="tokenAddressInput">Set token address</StyledLabel>
         <StyledInput
           id="tokenAddressInput"
           type="text"
@@ -224,11 +230,12 @@ export function Exchange() {
           onChange={handleExchangeAddressChange}
           style={{ fontStyle: reserves ? "normal" : "italic" }}
         ></StyledInput>
+        <div></div>
         <StyledLabel htmlFor="liquidityInput">Provide Liquidity</StyledLabel>
         <StyledInput
           id="liquidityInput"
           type="text"
-          placeholder={"<Liquidity to provice>"}
+          placeholder={"<Liquidity to provide>"}
           onChange={handleLiquidityChange}
           style={{ fontStyle: "italic" }}
         ></StyledInput>
