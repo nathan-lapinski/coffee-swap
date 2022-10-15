@@ -1,4 +1,6 @@
 # Overview
+*This project is still under construction*
+
 CoffeeSwap is a simple Decentralized Exchange (DEX) based on [Uniswap V1](https://docs.uniswap.org/protocol/V1/introduction). It's used for exchanging ERC20 tokens on the Ethereum Blockchain.
 
 Currently, this project is intended only for educational purposes. The front end is currently unstable pending some updates.
